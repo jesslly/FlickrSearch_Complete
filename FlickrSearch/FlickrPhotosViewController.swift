@@ -19,7 +19,32 @@ class FlickrPhotosViewController: UICollectionViewController {
     func photoForIndexPath(indexPath: NSIndexPath) -> FlickrPhoto {
         return searches[indexPath.section].searchResults[indexPath.row]
     }
-   
+ 
+    //1
+    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+        return searches.count
+    }
+    
+    //2
+    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return searches[section].searchResults.count
+    }
+    
+    //3
+    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! FlickrPhotoCell
+        
+        //2
+        let flickrPhoto = photoForIndexPath(indexPath)
+        
+        
+        //3
+        cell.imageView.image = flickrPhoto.thumbnail
+        
+        cell.backgroundColor = UIColor.blackColor()
+        // Configure the cell
+        return cell
+    }
 }
 
 
@@ -59,5 +84,26 @@ extension FlickrPhotosViewController : UITextFieldDelegate {
         textField.resignFirstResponder()
         return true
         
+    }
+}
+
+extension FlickrPhotosViewController : UICollectionViewDelegateFlowLayout {
+    //1
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        
+        let flickrPhoto = photoForIndexPath(indexPath)
+        
+        //2
+        if var size = flickrPhoto.thumbnail?.size {
+            size.width += 10
+            size.height += 10
+            return size
+        }
+        return CGSize(width: 100, height: 100)
+    }
+    
+    //3 
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
+        return sectionInsets
     }
 }
